@@ -22,6 +22,10 @@ app.use(express.urlencoded({ limit: '10mb', extended: false }))
 const authRouter = require('./routes/authRoutes')
 app.use('/auth', authRouter)
 
+app.get('/', (req, res) => {
+    res.render('welcome', {authBaseUrl: process.env.AUTH_BASEURL})
+})
+
 app.listen(PORT, () => {
     console.log(`Auth service is running on port ${PORT}`)
 })

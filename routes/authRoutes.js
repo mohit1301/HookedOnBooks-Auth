@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 router.get('/', (req, res) => {
-    res.render('dashboard')
+    res.render('dashboard', {authBaseUrl: process.env.AUTH_BASEURL})
 })
 
 router.get('/register', (req, res) => {
