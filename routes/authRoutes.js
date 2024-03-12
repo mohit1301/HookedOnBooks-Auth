@@ -80,11 +80,14 @@ router.post('/login', async (req, res) => {
     user.refreshToken = refreshToken
     await user.save()
 
-    res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, domain: `${process.env.BOOKS_BASEURL}`})
-    res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, domain: `${process.env.AUTHOR_BASEURL}`})
-    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, domain: `${process.env.BOOKS_BASEURL}`})
-    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, domain: `${process.env.AUTHOR_BASEURL}`})
-    res.redirect(`${process.env.BOOKS_BASEURL}/books/recentlyAdded`)
+    res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, domain: `${process.env.BOOKS_DOMAIN}`})
+    res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, domain: `${process.env.AUTHOR_DOMAIN}`})
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, domain: `${process.env.BOOKS_DOMAIN}`})
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, domain: `${process.env.AUTHOR_DOMAIN}`})
+    
+    setTimeout(()=>{
+        res.redirect(302, `${process.env.BOOKS_BASEURL}/books/recentlyAdded`)
+    }, 3000)
 })
 
 router.get('/newAccessToken', async (req, res) => {
@@ -121,8 +124,10 @@ router.get('/newAccessToken', async (req, res) => {
 });
 
 router.get('/logout',  async (req, res) => {
-    res.clearCookie('accessToken');
-    res.clearCookie('refreshToken');
+    res.clearCookie('accessToken', {domain: `${process.env.BOOKS_DOMAIN}`});
+    res.clearCookie('accessToken', {domain: `${process.env.AUTHOR_DOMAIN}`});
+    res.clearCookie('refreshToken', {domain: `${process.env.BOOKS_DOMAIN}`});
+    res.clearCookie('refreshToken', {domain: `${process.env.AUTHOR_DOMAIN}`});
     res.redirect('/auth');
 });
 
