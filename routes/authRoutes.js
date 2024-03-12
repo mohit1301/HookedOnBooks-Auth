@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
 })
 
 router.get('/register', (req, res) => {
-    res.render('register')
+    res.render('register', {authBaseUrl: process.env.AUTH_BASEURL})
 })
 
 // register
@@ -18,7 +18,8 @@ router.post('/register', async (req, res) => {
     const { username, email, password } = req.body
     if (!username || !email || !password) {
         res.render('register', {
-            errorMessage: 'All fields (username, email, password) are required'
+            errorMessage: 'All fields (username, email, password) are required',
+            authBaseUrl: process.env.AUTH_BASEURL
         })
     }
     const user = new User({
@@ -30,7 +31,8 @@ router.post('/register', async (req, res) => {
     try {
         await user.save()
         res.render('login', {
-            errorMessage: 'User Registered Successfully'
+            errorMessage: 'User Registered Successfully',
+            authBaseUrl: process.env.AUTH_BASEURL
         })
     } catch {
         res.redirect('/auth', {
@@ -43,7 +45,7 @@ router.get('/login', (req, res) => {
     if (req.cookies.accessToken) {
         return res.redirect(`${process.env.BOOKS_BASEURL}/books/recentlyAdded`);
     }
-    res.render('login')
+    res.render('login', {authBaseUrl: process.env.AUTH_BASEURL})
 })
 
 // login
@@ -51,20 +53,23 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body
     if (!email || !password) {
         res.render('register', {
-            errorMessage: 'All fields (email, password) are required'
+            errorMessage: 'All fields (email, password) are required',
+            authBaseUrl: process.env.AUTH_BASEURL
         })
     }
 
     const user = await User.findOne({ email: email })
     if (!user) {
         return res.render('login', {
-            errorMessage: 'User does not exist'
+            errorMessage: 'User does not exist',
+            authBaseUrl: process.env.AUTH_BASEURL
         })
     }
 
     if (!compareSync(password, user.password)) {
         return res.render('login', {
-            errorMessage: 'Invalid credentials'
+            errorMessage: 'Invalid credentials',
+            authBaseUrl: process.env.AUTH_BASEURL
         })
     }
 
