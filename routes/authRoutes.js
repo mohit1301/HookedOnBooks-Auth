@@ -80,14 +80,13 @@ router.post('/login', async (req, res) => {
     user.refreshToken = refreshToken
     await user.save()
 
-    res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, domain: `${process.env.BOOKS_DOMAIN}`})
-    res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, domain: `${process.env.AUTHOR_DOMAIN}`})
-    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, domain: `${process.env.BOOKS_DOMAIN}`})
-    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, domain: `${process.env.AUTHOR_DOMAIN}`})
+    res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, domain: `${process.env.BOOKS_DOMAIN}`, signed: true})
+    res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, domain: `${process.env.AUTHOR_DOMAIN}`, signed: true})
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, domain: `${process.env.BOOKS_DOMAIN}`, signed: true})
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, domain: `${process.env.AUTHOR_DOMAIN}`, signed: true})
     
-    setTimeout(()=>{
-        res.redirect(302, `${process.env.BOOKS_BASEURL}/books/recentlyAdded`)
-    }, 3000)
+    res.redirect(`${process.env.BOOKS_BASEURL}/books/recentlyAdded`)
+
 })
 
 router.get('/newAccessToken', async (req, res) => {
