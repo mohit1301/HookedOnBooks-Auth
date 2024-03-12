@@ -80,8 +80,10 @@ router.post('/login', async (req, res) => {
     user.refreshToken = refreshToken
     await user.save()
 
-    res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, })
-    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, })
+    res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, domain: `${process.env.BOOKS_BASEURL}`})
+    res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, domain: `${process.env.AUTHOR_BASEURL}`})
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, domain: `${process.env.BOOKS_BASEURL}`})
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, domain: `${process.env.AUTHOR_BASEURL}`})
     res.redirect(`${process.env.BOOKS_BASEURL}/books/recentlyAdded`)
 })
 
