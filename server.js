@@ -7,9 +7,6 @@ const cookieParser = require('cookie-parser')
 const PORT = process.env.AUTH_PORT || 3002
 require('./dbConfig/config')
 
-const passport = require('./passport')
-app.use(passport.initialize())
-
 app.use(cookieParser())
 app.use(expressLayouts)
 app.set('view engine', 'ejs')
