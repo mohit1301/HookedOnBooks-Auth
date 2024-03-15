@@ -6,11 +6,11 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 router.get('/', (req, res) => {
-    res.render('dashboard', {authBaseUrl: process.env.AUTH_BASEURL})
+    res.render('dashboard', { authBaseUrl: process.env.AUTH_BASEURL })
 })
 
 router.get('/register', (req, res) => {
-    res.render('register', {authBaseUrl: process.env.AUTH_BASEURL})
+    res.render('register', { authBaseUrl: process.env.AUTH_BASEURL })
 })
 
 // register
@@ -45,7 +45,7 @@ router.get('/login', (req, res) => {
     if (req.cookies.accessToken) {
         return res.redirect(`${process.env.BOOKS_BASEURL}/books/recentlyAdded`);
     }
-    res.render('login', {authBaseUrl: process.env.AUTH_BASEURL})
+    res.render('login', { authBaseUrl: process.env.AUTH_BASEURL })
 })
 
 // login
@@ -80,12 +80,15 @@ router.post('/login', async (req, res) => {
     user.refreshToken = refreshToken
     await user.save()
 
-    res.cookie('accessToken', accessToken, { secure: true, domain: `${process.env.BOOKS_DOMAIN}`, sameSite: 'none', path: '/books'})
-    res.cookie('accessToken', accessToken, { secure: true, domain: `${process.env.AUTHOR_DOMAIN}`, sameSite: 'none', path: '/authors'})
-    res.cookie('refreshToken', refreshToken, { secure: true, domain: `${process.env.BOOKS_DOMAIN}`, sameSite: 'none', path: '/books'})
-    res.cookie('refreshToken', refreshToken, { secure: true, domain: `${process.env.AUTHOR_DOMAIN}`, sameSite: 'none', path: '/authors'})
+    // res.cookie('accessToken', accessToken, { secure: true, domain: `${process.env.BOOKS_DOMAIN}`, sameSite: 'none', path: '/books' })
+    // res.cookie('accessToken', accessToken, { secure: true, domain: `${process.env.AUTHOR_DOMAIN}`, sameSite: 'none', path: '/authors' })
+    // res.cookie('refreshToken', refreshToken, { secure: true, domain: `${process.env.BOOKS_DOMAIN}`, sameSite: 'none', path: '/books' })
+    // res.cookie('refreshToken', refreshToken, { secure: true, domain: `${process.env.AUTHOR_DOMAIN}`, sameSite: 'none', path: '/authors' })
     
-    res.redirect(`${process.env.BOOKS_BASEURL}/books/recentlyAdded`)
+    const encodedAccessToken = encodeToken(accessToken)
+    const encodedRefreshToken = encodeToken(refreshToken)
+
+    res.redirect(`${process.env.BOOKS_BASEURL}/books/recentlyAdded?accessToken=${encodedAccessToken}&refreshToken=${encodedRefreshToken}`)
 
 })
 
@@ -122,11 +125,11 @@ router.get('/newAccessToken', async (req, res) => {
     }
 });
 
-router.get('/logout',  async (req, res) => {
-    res.clearCookie('accessToken', {domain: `${process.env.BOOKS_DOMAIN}`});
-    res.clearCookie('accessToken', {domain: `${process.env.AUTHOR_DOMAIN}`});
-    res.clearCookie('refreshToken', {domain: `${process.env.BOOKS_DOMAIN}`});
-    res.clearCookie('refreshToken', {domain: `${process.env.AUTHOR_DOMAIN}`});
+router.get('/logout', async (req, res) => {
+    res.clearCookie('accessToken', { domain: `${process.env.BOOKS_DOMAIN}` });
+    res.clearCookie('accessToken', { domain: `${process.env.AUTHOR_DOMAIN}` });
+    res.clearCookie('refreshToken', { domain: `${process.env.BOOKS_DOMAIN}` });
+    res.clearCookie('refreshToken', { domain: `${process.env.AUTHOR_DOMAIN}` });
     res.redirect('/auth');
 });
 
@@ -140,6 +143,17 @@ const generateAccessToken = (userId) => {
 const generateRefreshToken = (userId) => {
     return jwt.sign({ userId }, process.env.JWT_REFRESH_SECRET_KEY, { expiresIn: '1d' });
 };
+
+const encodeToken = (token) => {
+
+    // Base64 encode the token
+    const base64Token = Buffer.from(token).toString('base64');
+
+    // URL encode the base64 encoded token
+    const encodedToken = encodeURIComponent(base64Token);
+
+    return encodedToken
+}
 
 
 module.exports = router
