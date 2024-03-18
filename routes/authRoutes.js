@@ -2,7 +2,8 @@ const express = require('express')
 const User = require('../models/userModel')
 const router = express.Router()
 const { hashSync, compareSync } = require('bcrypt')
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const axios = require('axios').default;
 require('dotenv').config()
 
 router.get('/', (req, res) => {
@@ -84,12 +85,11 @@ router.post('/login', async (req, res) => {
     // res.cookie('accessToken', accessToken, { secure: true, domain: `${process.env.AUTHOR_DOMAIN}`, sameSite: 'none', path: '/authors' })
     // res.cookie('refreshToken', refreshToken, { secure: true, domain: `${process.env.BOOKS_DOMAIN}`, sameSite: 'none', path: '/books' })
     // res.cookie('refreshToken', refreshToken, { secure: true, domain: `${process.env.AUTHOR_DOMAIN}`, sameSite: 'none', path: '/authors' })
-    
+
     const encodedAccessToken = encodeToken(accessToken)
     const encodedRefreshToken = encodeToken(refreshToken)
 
     res.redirect(`${process.env.BOOKS_BASEURL}/books/recentlyAdded?accessToken=${encodedAccessToken}&refreshToken=${encodedRefreshToken}`)
-
 })
 
 router.get('/newAccessToken', async (req, res) => {
@@ -136,7 +136,7 @@ router.get('/logout', async (req, res) => {
 
 // Function to generate access token
 const generateAccessToken = (userId) => {
-    return jwt.sign({ userId }, process.env.JWT_SECRET_KEY, { expiresIn: '5m' });
+    return jwt.sign({ userId }, process.env.JWT_SECRET_KEY, { expiresIn: '2m' });
 };
 
 // Function to generate refresh token
