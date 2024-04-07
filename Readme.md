@@ -29,7 +29,7 @@ To run the Auth service locally, follow these steps:
 2.  Install dependencies:
 
     ```bash
-    cd hookedonbooks-auth
+    cd HookedOnBooks-Auth
     npm install
     ```
 
