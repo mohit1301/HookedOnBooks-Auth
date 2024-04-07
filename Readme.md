@@ -61,4 +61,7 @@ To run the Auth service locally, follow these steps:
 
 ## Note
 
-Keep the values of `JWT_SECRET_KEY` & `JWT_REFRESH_SECRET_KEY` environment variables same across all the services of the Hooked On Books app, namely **_AUTH, BOOKS, AUTHORS_**
+Keep the values of `JWT_SECRET_KEY` & `JWT_REFRESH_SECRET_KEY` environment variables same across all the services of the Hooked On Books app, namely **_AUTH, BOOKS, AUTHORS_**. Links to other services -
+
+-   [Books Service](https://github.com/mohit1301/HookedOnBooks-Book)
+-   [Authors Service](https://github.com/mohit1301/HookedOnBooks-Author)
